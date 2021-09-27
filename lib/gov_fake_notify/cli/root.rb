@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'thor'
-require 'base64'
 require 'gov_fake_notify/iodine'
 require 'uri'
 require 'net/http'
@@ -21,10 +20,10 @@ module GovFakeNotify
       method_option :path, type: :string, required: true
       method_option :name, type: :string, required: true
       method_option :subject, type: :string, required: true
-      def create_template # rubocop:disable Metrics/AbcSize
+      def create_template
         data = {
           id: options.template_id,
-          message: Base64.encode64(File.read(options.path)),
+          message: File.read(options.path),
           name: options.name,
           subject: options.subject
         }
