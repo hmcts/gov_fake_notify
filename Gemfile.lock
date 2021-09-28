@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gov_fake_notify (1.1.0)
+    gov_fake_notify (1.1.1)
       activemodel (>= 5.2.3)
       iodine (~> 0.7)
       jwt (~> 2.2, >= 2.2.3)

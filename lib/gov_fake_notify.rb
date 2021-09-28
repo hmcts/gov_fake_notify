@@ -22,7 +22,7 @@ module GovFakeNotify
   def self.configure_mail
     our_config = config
     Mail.defaults do
-      case our_config.delivery_method
+      case our_config.delivery_method.to_s
       when 'smtp'
         delivery_method :smtp, address: our_config.smtp_address, port: our_config.smtp_port
       when 'test'
