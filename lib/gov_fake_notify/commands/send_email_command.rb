@@ -14,11 +14,12 @@ module GovFakeNotify
       new(params, **kwargs).call
     end
 
-    def initialize(params, base_url:, store: Store.instance, attachment_store: AttachmentStore.instance)
+    def initialize(params, base_url:, service:, store: Store.instance, attachment_store: AttachmentStore.instance)
       @params = params.dup
       @store = store
       @attachment_store = attachment_store
       @base_url = base_url
+      @service = service
     end
 
     def call
@@ -51,15 +52,16 @@ module GovFakeNotify
 
     private
 
-    attr_reader :params, :store, :attachment_store, :base_url, :message_body, :id
+    attr_reader :params, :store, :attachment_store, :base_url, :message_body, :id, :service
 
     def send_email_from_template(template_data) # rubocop:disable Metrics/MethodLength
       pre_process_files
       our_params = params
       our_body = mail_message(template_data)
+      our_service = service
       @message_body = our_body
       mail = Mail.new do
-        from    'govfakenotify@email.com'
+        from    our_service['service_email']
         to      our_params['email_address']
         subject template_data['subject']
         html_part do

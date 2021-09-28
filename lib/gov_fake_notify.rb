@@ -45,16 +45,23 @@ module GovFakeNotify
       api_key = k.stringify_keys
       next if store.transaction { store.root?("apikey-#{api_key['key']}") }
 
-      store.transaction { store["apikey-#{api_key['key']}"] = api_key.dup }
+      store.transaction do
+        key = api_key.dup
+        secret_token = key['key']
+        key['service_id'] = secret_token[-73..-38]
+        key['secret_token'] = secret_token[-36..-1]
+        store["apikey-#{api_key['key']}"] = key
+      end
     end
   end
 
   def self.init
     Config.instance # Pre load
+    FileUtils.mkdir_p GovFakeNotify.config.attachments_path
+    FileUtils.mkdir_p File.dirname(GovFakeNotify.config.database_file)
     GovFakeNotify.configure_mail
     GovFakeNotify.configure_templates
     GovFakeNotify.configure_api_keys
-    FileUtils.mkdir_p GovFakeNotify.config.attachments_path
   end
 
   def self.reset!

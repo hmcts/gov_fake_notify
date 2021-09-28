@@ -24,8 +24,8 @@ module GovFakeNotify
     c.base_url = ENV.fetch('GOV_FAKE_NOTIFY_BASE_URL', 'http://localhost:8080')
     c.smtp_authentication = nil
     c.smtp_enable_starttls_auto = false
-    c.database_file = '/home/devuser/gov_fake_notify_store'
-    c.attachments_path = '/home/devuser/gov_fake_notify_attachments'
+    c.database_file = "#{ENV['HOME']}/.gov_fake_notify/store"
+    c.attachments_path = "#{ENV['HOME']}/.gov_fake_notify/attachments"
     c.include_templates = []
     c.include_api_keys = []
     c.delivery_method = :smtp

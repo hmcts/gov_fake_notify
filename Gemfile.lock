@@ -1,9 +1,10 @@
 PATH
   remote: .
   specs:
-    gov_fake_notify (1.0.0)
+    gov_fake_notify (1.0.1)
       activemodel (>= 5.2.3)
       iodine (~> 0.7)
+      jwt (~> 2.2, >= 2.2.3)
       mail (~> 2.7, >= 2.7.1)
       roda (~> 3.48)
       thor (~> 1.1)
@@ -26,6 +27,7 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     iodine (0.7.44)
+    jwt (2.2.3)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     mini_mime (1.1.1)
