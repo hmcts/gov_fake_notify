@@ -11,6 +11,11 @@ module GovFakeNotify
     plugin :sinatra_helpers
     plugin :json_parser
     route do |r|
+      r.is 'reset' do
+        r.post do
+          GovFakeNotify.reset!
+        end
+      end
       r.is 'templates' do
         r.post do
           result = CreateTemplateCommand.call(request.params)
