@@ -60,7 +60,7 @@ RSpec.configure do |c|
   end
 end
 GovFakeNotify.config do |c|
-  c.delivery_method = :test
+  c.delivery_method = 'test'
   c.include_templates = [
     {
       id: 'a55e0b84-8d65-4bf4-93a7-e974e0d8d48d', # Note - does not need to be exact id that is used in govuk notify UNLESS 
@@ -107,6 +107,154 @@ GovFakeNotify.config do |c|
   ]
 end
 ```
+
+## Configuration
+
+Configuration can be done using the command line, a config file, environment variables or directly (in process only).
+Note that the configuration can include an API key - do not be tempted to use the same value as the production environment
+as the chances are it will end up in github which is publically accessible.
+
+The following configuration entries are available
+
+port
+smtp_address
+smtp_port
+smtp_user_name
+smtp_password
+smtp_authentication
+smtp_enable_starttls_auto
+base_url
+database_file
+attachments_path
+delivery_method
+include_templates (config file or direct config only)
+include_api_keys (config file or direct config only)
+
+To configure via the command line - use the 'dash' version of the variable - for example
+
+--smtp-port instead of smtp_port
+
+To configure in the yaml file use the actual variable name
+
+### An example yaml config file (from employment tribunals config)
+
+```yaml
+---
+  port: 8081
+  delivery_method: test
+  include_templates:
+  - id: a55e0b84-8d65-4bf4-93a7-e974e0d8d48d
+    name: et1-confirmation-email-v1-en
+    subject: "Employment tribunal: claim submitted"
+    message: |
+      Claim number: ((claim.reference))
+
+      ((primary_claimant.first_name)) ((primary_claimant.last_name))
+      
+      Thank you for submitting your claim to an employment tribunal.
+      
+      ---
+      
+      WHAT HAPPENS NEXT
+      
+      We'll contact you once we have sent your claim to the respondent and explain what happens next.
+      At present, this is taking us an average of 25 days.
+      Once we have sent them your claim, the respondent has 28 days to reply.
+      
+      ---
+      
+      SUBMISSION DETAILS
+      
+      Claim submitted:       ((submitted_date))
+      Tribunal office:       ((office.name))
+      Contact: ((office.email)), ((office.telephone))
+      
+      ---
+      
+      Please use the link below to download a copy of your claim.
+      ((link_to_pdf))
+      
+      ---
+      
+      Additional Information File
+      
+      ((link_to_additional_info))
+      
+      ---
+      
+      Group Claim File
+      
+      ((link_to_claimants_file))
+      
+      ---
+      
+      
+      
+      Your feedback helps us improve this service:
+      https://www.gov.uk/done/employment-tribunals-make-a-claim
+      
+      Help us keep track. Complete our diversity monitoring questionnaire.
+      https://employmenttribunals.service.gov.uk/en/apply/diversity
+      
+      Contact us: http://www.justice.gov.uk/contacts/hmcts/tribunals/employment
+  - id: 97a117f1-727d-4631-bbc6-b2bc98d30a0f
+    name: et1-confirmation-email-v1-cy
+    subject: "Tribiwnlys Cyflogaeth: hawliad wedi’i gyflwyno"
+    message: |
+      Eich rhif hawliad: ((claim.reference))
+
+      ((primary_claimant.first_name)) ((primary_claimant.last_name))
+      Diolch am gyflwyno eich hawliad i dribiwnlys cyflogaeth.
+      ---
+      
+      BETH SY'N DIGWYDD NESAF
+      
+      Byddwn yn cysylltu â chi unwaith y byddwn wedi anfon eich hawliad at yr atebydd i egluro beth fydd yn digwydd nesaf. Ar hyn o bryd, mae’n cymryd oddeutu 25 diwrnod.
+      Unwaith y byddwn wedi anfon eich hawliad atynt, mae gan yr atebydd 28 diwrnod i ymateb.
+      
+      ---
+      
+      MANYLION CYFLWYNO
+      
+      Hawliad wedi'i gyflwyno:      Cyflwynwyd ar ((submitted_date))
+      Swyddfa tribiwnlys:           Cymru, Tribiwnlys Cyflogaeth
+      Cyswllt: ((office.email)), 0300 303 0654
+      
+      ---     
+      
+      Defnyddiwch y ddolen isod i lawrlwytho copi o’ch hawliad.
+      ((link_to_pdf))
+      
+      ---
+      
+      Ffeil Gwybodaeth Ychwanegol
+      
+      ((link_to_additional_info))
+      
+      ---
+      
+      Hawliad Grŵp
+      
+      ((link_to_claimants_file))
+      
+      ---
+      
+      Mae eich adborth yn ein helpu i wella'r gwasanaeth hwn:
+      https://www.gov.uk/done/employment-tribunals-make-a-claim
+      
+      Helpwch ni i gadw cofnodion cywir . Llenwch ein holiadur monitro amrywiaeth.
+      https://employmenttribunals.service.gov.uk/en/apply/diversity
+      
+      Cysylltu â ni: http://www.justice.gov.uk/contacts/hmcts/tribunals/employment
+  include_api_keys: 
+  - service_name: Employment Tribunals
+    service_email: employmenttribunals@email.com
+    key: fake-key-7fc24bc8-1938-1827-bed3-fb237f9cd5e7-c34b3015-02a1-4e01-b922-1ea21f331d4d
+    
+
+```
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

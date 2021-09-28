@@ -23,9 +23,9 @@ module GovFakeNotify
     our_config = config
     Mail.defaults do
       case our_config.delivery_method
-      when :smtp
+      when 'smtp'
         delivery_method :smtp, address: our_config.smtp_address, port: our_config.smtp_port
-      when :test
+      when 'test'
         delivery_method :test
       end
     end
@@ -33,7 +33,7 @@ module GovFakeNotify
 
   def self.configure_templates(store: Store.instance)
     config.include_templates.each do |t|
-      template = t.stringify_keys
+      template = t.transform_keys(&:to_s)
       next if store.transaction { store.root?("template-#{template['id']}") }
 
       store.transaction { store["template-#{template['id']}"] = template.dup }
@@ -42,7 +42,7 @@ module GovFakeNotify
 
   def self.configure_api_keys(store: Store.instance)
     config.include_api_keys.each do |k|
-      api_key = k.stringify_keys
+      api_key = k.transform_keys(&:to_s)
       next if store.transaction { store.root?("apikey-#{api_key['key']}") }
 
       store.transaction do
