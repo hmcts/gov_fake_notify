@@ -57,19 +57,20 @@ module GovFakeNotify
     def send_email_from_template(template_data) # rubocop:disable Metrics/MethodLength
       pre_process_files
       our_params = params
-      our_body = mail_message(template_data)
+      our_html_body = mail_message_html(template_data)
+      our_text_body = mail_message_text(template_data)
       our_service = service
-      @message_body = our_body
+      @message_body = our_html_body
       mail = Mail.new do
         from    our_service['service_email']
         to      our_params['email_address']
         subject template_data['subject']
         html_part do
           content_type 'text/html; charset=UTF-8'
-          body our_body
+          body our_html_body
         end
         text_part do
-          body 'text part to go here'
+          body our_text_body
         end
       end
       mail.deliver
@@ -101,52 +102,101 @@ module GovFakeNotify
       end
     end
 
-    def mail_message(template_data)
+    def mail_message_html(template_data)
       layout = Tilt.new(File.absolute_path('../../views/layouts/govuk.html.erb', __dir__))
       layout.render do
-        template_content(template_data)
+        template_content_html(template_data)
       end
     end
 
-    def template_content(template_data)
+    def mail_message_text(template_data)
+      layout = Tilt.new(File.absolute_path('../../views/layouts/govuk.text.erb', __dir__))
+      layout.render do
+        template_content_text(template_data)
+      end
+    end
+
+    def template_content_html(template_data)
       template = template_data['message']
       buffer = ''.dup
       template.each_line do |line|
-        buffer << format_line(line)
+        buffer << format_line_html(line)
       end
       buffer
     end
 
-    def format_line(line)
-      replaced = line.gsub(/\(\(([^)]*)\)\)/) do
-        post_process_value params['personalisation'][Regexp.last_match[1]]
+    def template_content_text(template_data)
+      template = template_data['message']
+      buffer = ''.dup
+      template.each_line do |line|
+        buffer << format_line_text(line)
       end
-      wrap_line(replaced)
+      buffer
     end
 
-    def post_process_value(value)
+    def format_line_html(line)
+      replaced = line.gsub(/\(\(([^)]*)\)\)/) do
+        post_process_value_html params['personalisation'][Regexp.last_match[1]]
+      end
+      wrap_line_html(replaced)
+    end
+
+    def format_line_text(line)
+      replaced = line.gsub(/\(\(([^)]*)\)\)/) do
+        post_process_value_text params['personalisation'][Regexp.last_match[1]]
+      end
+      wrap_line_text(replaced)
+    end
+
+    def post_process_value_html(value)
       return value unless value.is_a?(Hash) && value.keys.include?('file')
 
-      render_file(value)
+      render_file_html(value)
     end
 
-    def wrap_line(line)
+    def post_process_value_text(value)
+      return value unless value.is_a?(Hash) && value.keys.include?('file')
+
+      render_file_text(value)
+    end
+
+    def wrap_line_html(line)
       case line
-      when /^---/ then render_horizontal_line
-      else render_paragraph(line)
+      when /^---/ then render_horizontal_line_html
+      else render_paragraph_html(line)
       end
     end
 
-    def render_horizontal_line
+    def wrap_line_text(line)
+      case line
+      when /^---/ then render_horizontal_line_text
+      else render_paragraph_text(line)
+      end
+    end
+
+    def render_horizontal_line_html
       Tilt.new(File.absolute_path('../../views/govuk/horizontal_line.html.erb', __dir__)).render
     end
 
-    def render_paragraph(line)
+    def render_horizontal_line_text
+      Tilt.new(File.absolute_path('../../views/govuk/horizontal_line.text.erb', __dir__)).render
+    end
+
+    def render_paragraph_html(line)
       Tilt.new(File.absolute_path('../../views/govuk/paragraph.html.erb', __dir__)).render(nil, content: line)
     end
 
-    def render_file(file_data)
+    def render_paragraph_text(line)
+      Tilt.new(File.absolute_path('../../views/govuk/paragraph.text.erb', __dir__)).render(nil, content: line)
+    end
+
+    def render_file_html(file_data)
       Tilt.new(File.absolute_path('../../views/govuk/file.html.erb', __dir__)).render(nil, file_data: file_data,
+                                                                                           base_url: base_url)
+    end
+
+    def render_file_text(file_data)
+      Tilt.new(File.absolute_path('../../views/govuk/file.text.erb', __dir__)).render(nil, file_data: file_data,
                                                                                            base_url: base_url)
     end
   end
