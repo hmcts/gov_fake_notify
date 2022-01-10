@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activemodel', '>= 5.2.3'
+  spec.add_dependency 'activemodel', '~> 6.1'
   spec.add_dependency 'iodine', '~> 0.7'
   spec.add_dependency 'jwt', '~> 2.2', '>= 2.2.3'
   spec.add_dependency 'mail', '~> 2.7', '>= 2.7.1'
