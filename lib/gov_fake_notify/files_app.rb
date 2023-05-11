@@ -12,9 +12,6 @@ module GovFakeNotify
     plugin :halt
     plugin :sinatra_helpers
     route do |r|
-      unless (service = current_service)
-        r.halt 403, { 'Content-Type' => 'application/json' }, { message: 'Invalid or missing token' }.to_json
-      end
       r.is 'download', String do |id|
         Tilt.new(File.absolute_path('../views/files/download.html.erb', __dir__)).render(nil, service_name: 'Employment Tribunals', service_email: 'et@test.com', id: id)
       end

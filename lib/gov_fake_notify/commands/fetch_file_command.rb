@@ -24,7 +24,7 @@ module GovFakeNotify
 
     def call
       file_data = attachment_store.fetch(id)
-      errors << 'File not found' and return if file_data.nil?
+      errors << 'File not found' and return self if file_data.nil?
 
       @filename = file_data['file']
       self
