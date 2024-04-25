@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'thor'
-require 'gov_fake_notify/iodine'
 require 'uri'
 require 'net/http'
 require 'yaml'
+require 'puma'
+require 'puma/configuration'
 module GovFakeNotify
   module Cli
     # Root of all commands
@@ -29,7 +30,14 @@ module GovFakeNotify
             c.from(YAML.parse(File.read(options.config)).to_ruby.merge(options.slice(*(options.keys - ['config']))))
           end
         end
-        Rack::Server.start app: GovFakeNotify::RootApp, Port: GovFakeNotify.config.port, server: 'iodine'
+
+        conf = Puma::Configuration.new do |user_config|
+          user_config.threads 1, 1
+          user_config.workers 1
+          user_config.port GovFakeNotify.config.port
+          user_config.app { GovFakeNotify::RootApp }
+        end
+        Puma::Launcher.new(conf, log_writer: Puma::LogWriter.stdio).run
       end
 
       desc 'create-template', 'Create a template'
