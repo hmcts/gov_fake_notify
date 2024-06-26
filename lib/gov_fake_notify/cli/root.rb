@@ -35,7 +35,7 @@ module GovFakeNotify
           user_config.threads 1, 1
           user_config.workers 1
           user_config.port GovFakeNotify.config.port
-          user_config.app { GovFakeNotify::RootApp }
+          user_config.app GovFakeNotify::RootApp
         end
         Puma::Launcher.new(conf, log_writer: Puma::LogWriter.stdio).run
       end
