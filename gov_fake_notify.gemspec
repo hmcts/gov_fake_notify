@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'mail', '~> 2.7', '>= 2.7.1'
   spec.add_dependency 'roda', '~> 3.48'
   spec.add_dependency 'tilt', '~> 2.0', '>= 2.0.10'
+  spec.add_dependency 'pstore', '~> 0.2.1'
 
   spec.add_dependency 'thor', '~> 1.1'
 
