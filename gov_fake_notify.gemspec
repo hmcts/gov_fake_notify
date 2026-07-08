@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activemodel', '>= 6.1'
   spec.add_dependency 'rack', '>= 2.0'
   spec.add_dependency 'puma', '>= 6.0'
-  spec.add_dependency 'jwt', '~> 2.2', '>= 2.2.3'
+  spec.add_dependency 'jwt', '~> 3.0'
   spec.add_dependency 'mail', '~> 2.7', '>= 2.7.1'
   spec.add_dependency 'roda', '~> 3.48'
   spec.add_dependency 'tilt', '~> 2.0', '>= 2.0.10'
